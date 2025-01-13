@@ -1,13 +1,14 @@
 "use client"
 import { countCoin } from '@/app/api/coin';
-import { Button, FileInput } from '@mantine/core'
-import Image from 'next/image';
+import { Coin } from '@/app/type';
+import { Button, FileInput, Image, Table } from '@mantine/core'
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
 function Base() {
   const [value, setValue] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null); // 画像URLのステートを追加
+  const [coinData, setCoinData] = useState<Coin | null>(null);
 
   const router = useRouter();
 
@@ -15,33 +16,46 @@ function Base() {
     if(!value){
       return
     }
-    const imageBlob = await countCoin(value); // 画像Blobを取得
-    const imageUrl = URL.createObjectURL(imageBlob); // BlobをURLに変換
-    setImageUrl(imageUrl); // 画像URLをステートに保存
+    // POST通信
+    const result = await countCoin(value); // 画像Blobを取得
+    // 加工済み画像をセット
+    setImageUrl(`data:image/jpeg;base64,${result.processedImageBase64}`);
+    console.log(result.processedImageBase64)
+    // コインの枚数データをセット
+    // setCoinData(result.coin);
+    // console.log(result.coin)
     router.push("/")
     router.refresh()
   }
 
   return (
-    <div>
-      Base
+    <div className="px-5 mt-5 text-center min-w-96 max-w-[32rem] mx-auto">
       <FileInput
         size="xl"
         radius="xl"
-        label="Input label"
-        description="Input description"
-        placeholder="Input placeholder"
+        placeholder="カメラを起動"
         value={value}
         onChange={setValue}
       />
-      <Button onClick={handleSubmit}>
-        すbみt
-      </Button>
+      {value && (
+        <Button onClick={handleSubmit} size='md' className='bg-custom-main mt-2 mb-5' color='#896859'>
+          硬貨を計算する!!
+        </Button>
+      )}
 
       {imageUrl && (
-        <div>
-          <h2>Processed Image:</h2>
-          <Image src={imageUrl} alt="Processed Coin Image" width={100} height={100}/>
+        <div className='bg-gray-100 rounded-md text-xl px-2 py-5'>
+          {/* <div className='text-xl text-gray-400 my-1'>計算結果</div> */}
+          <div className='text-3xl font-bold mb-3'>合計金額：718円</div>
+          <div className='my-1'>＜内訳＞</div>
+          <div className='my-1'>100円玉：{coinData?.hundred_yen}枚(500円)</div>
+          <div className='my-1'>50円玉：{coinData?.fifty_yen}枚(250円)</div>
+          <div className='my-1'>10円玉：{coinData?.ten_yen}枚(50円)</div>
+          <div className='my-1'>5円玉：{coinData?.five_yen}枚(25円)</div>
+          <div className='my-1'>1円玉：{coinData?.one_yen}枚(5円)</div>
+          <div className='w-56 mx-auto'>
+            <Image src={imageUrl} alt="Processed Coin Image"/>
+          </div>
         </div>
       )}
     </div>

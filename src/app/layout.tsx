@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${inter.className} bg-gray-100`}>
+      <body className={`${inter.className} bg-custom-base`}>
         <MantineProvider>
           <Header />
           {children}
