@@ -21,6 +21,8 @@ function Base() {
     // 加工済み画像をセット
     setImageUrl(`data:image/jpeg;base64,${result.processedImageBase64}`);
     console.log(result.processedImageBase64)
+    setCoinData(result.coin)
+    // console.log(result.coin)
     // コインの枚数データをセット
     // setCoinData(result.coin);
     // console.log(result.coin)
@@ -43,16 +45,16 @@ function Base() {
         </Button>
       )}
 
-      {imageUrl && (
+      {imageUrl && coinData && (
         <div className='bg-gray-100 rounded-md text-xl px-2 py-5'>
           {/* <div className='text-xl text-gray-400 my-1'>計算結果</div> */}
-          <div className='text-3xl font-bold mb-3'>合計金額：718円</div>
+          <div className='text-3xl font-bold mb-3'>合計金額：{(100*coinData.hundred_yen)+(50*coinData.fifty_yen)+(10*coinData.ten_yen)+(5*coinData.five_yen)+(1*coinData.one_yen)}円</div>
           <div className='my-1'>＜内訳＞</div>
-          <div className='my-1'>100円玉：{coinData?.hundred_yen}枚(500円)</div>
-          <div className='my-1'>50円玉：{coinData?.fifty_yen}枚(250円)</div>
-          <div className='my-1'>10円玉：{coinData?.ten_yen}枚(50円)</div>
-          <div className='my-1'>5円玉：{coinData?.five_yen}枚(25円)</div>
-          <div className='my-1'>1円玉：{coinData?.one_yen}枚(5円)</div>
+          <div className='my-1'>100円玉：{coinData.hundred_yen}枚({100*coinData.hundred_yen}円)</div>
+          <div className='my-1'>50円玉：{coinData.fifty_yen}枚({50*coinData.fifty_yen}円)</div>
+          <div className='my-1'>10円玉：{coinData.ten_yen}枚({10*coinData.ten_yen}円)</div>
+          <div className='my-1'>5円玉：{coinData.five_yen}枚({5*coinData.five_yen}円)</div>
+          <div className='my-1'>1円玉：{coinData.one_yen}枚({1*coinData.one_yen}円)</div>
           <div className='w-56 mx-auto'>
             <Image src={imageUrl} alt="Processed Coin Image"/>
           </div>
