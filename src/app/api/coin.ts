@@ -85,8 +85,8 @@ export const countCoin = async (
   console.log(imageFile.type); // 画像のタイプをログ出力
   console.log("APIを叩きます");
 
-  // const res = await fetch(`https://coinselector-backend.kajilab.dev/imagePlus`, {
-  const res = await fetch(`http://localhost:3102/imagePlus`, {
+  const res = await fetch(`https://coinselector-backend.kajilab.dev/imagePlus`, {
+  // const res = await fetch(`http://localhost:3102/imagePlus`, {
     method: "POST",
     headers: {
       "Content-Type": imageFile.type,
