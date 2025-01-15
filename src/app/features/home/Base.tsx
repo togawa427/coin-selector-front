@@ -1,5 +1,6 @@
 "use client"
 import { countCoin } from '@/app/api/coin';
+import Loading from '@/app/components/Loading';
 import { Coin } from '@/app/type';
 import { Button, FileInput, Image, Table } from '@mantine/core'
 import { useRouter } from 'next/navigation';
@@ -9,6 +10,7 @@ function Base() {
   const [value, setValue] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null); // 画像URLのステートを追加
   const [coinData, setCoinData] = useState<Coin | null>(null);
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
 
   const router = useRouter();
 
@@ -16,12 +18,14 @@ function Base() {
     if(!value){
       return
     }
+    setIsLoading(true)
     // POST通信
     const result = await countCoin(value); // 画像Blobを取得
     // 加工済み画像をセット
     setImageUrl(`data:image/jpeg;base64,${result.processedImageBase64}`);
     console.log(result.processedImageBase64)
     setCoinData(result.coin)
+    setIsLoading(false)
     // console.log(result.coin)
     // コインの枚数データをセット
     // setCoinData(result.coin);
@@ -29,6 +33,12 @@ function Base() {
     router.push("/")
     router.refresh()
   }
+
+  // if(isLoading){
+  //   return(
+  //     <Loading message='計算中'/>
+  //   )
+  // }
 
   return (
     <div className="px-5 mt-5 text-center min-w-96 max-w-[32rem] mx-auto">
@@ -40,9 +50,25 @@ function Base() {
         onChange={setValue}
       />
       {value && (
-        <Button onClick={handleSubmit} size='md' className='bg-custom-main mt-2 mb-5' color='#896859'>
-          硬貨を計算する!!
-        </Button>
+        <div>
+          {!isLoading ? (
+              <Button onClick={handleSubmit} size='md' className='bg-custom-main mt-2 mb-5' color='#896859'>
+                硬貨を計算する!!
+              </Button>
+            ) : (
+              <Button loading loaderProps={{ type: 'dots' }} size='md' className='bg-custom-main mt-2 mb-5' color='#896859'>
+                硬貨を計算する!!
+              </Button>
+            )
+          }
+        </div>
+        // <Button onClick={handleSubmit} size='md' className='bg-custom-main mt-2 mb-5' color='#896859'>
+        //   硬貨を計算する!!
+        // </Button>
+      )}
+
+      {isLoading && (
+        <Loading message='計算中' />
       )}
 
       {imageUrl && coinData && (
